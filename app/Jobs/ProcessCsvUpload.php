@@ -92,10 +92,9 @@ class ProcessCsvUpload implements ShouldQueue
         $this->product_upload->save();
 
          // Dispatch ImportProductJob per product
-        foreach ($grouped as $product_id) {
 
-            ImportProductJob::dispatch($product_id, $this->product_upload);
-        }
+         ImportProductJob::dispatch($grouped, $this->product_upload);
+        
 
         $this->product_upload->status = 'completed';
         $this->product_upload->save();
