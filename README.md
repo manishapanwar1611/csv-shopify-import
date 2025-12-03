@@ -39,6 +39,8 @@ cd project-folder
 
 ```bash
 composer install
+npm install && npm run build
+
 ```
 
 ### 3. Setup Environment File
@@ -47,6 +49,8 @@ Copy `.env.example` → `.env`
 
 ```bash
 cp .env.example .env
+php artisan key:generate
+
 ```
 
 Set database credentials:
@@ -66,6 +70,11 @@ SHOPIFY_API_VERSION=xxxx
 SHOPIFY_ACCESS_TOKEN=shpat_xxxxx
 SHOPIFY_COLLECTION_ID=xxxx
 ```
+
+```
+Generate app key:
+php artisan key:generate
+
 
 Set queue driver:
 
