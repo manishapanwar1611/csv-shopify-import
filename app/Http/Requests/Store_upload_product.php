@@ -22,7 +22,7 @@ class Store_upload_product extends FormRequest
     public function rules(): array
     {
         return [    
-            'product_csv' => 'required|file|mimes:csv,txt|max:5120' // 5MB
+            'product_csv' => 'required|file|mimes:csv|max:5120' // 5MB
         ];
     }
 }
