@@ -15,6 +15,13 @@ class ImportProductJob implements ShouldQueue
 
     protected $product_ids;
     protected $product_upload;
+    public $tries = 3;
+
+    public function backoff()
+    {
+        return [15, 60, 120];
+    }
+
     /**
      * Create a new job instance.
      */
@@ -38,7 +45,7 @@ class ImportProductJob implements ShouldQueue
 
         foreach($product_data_all as $product_data)
         {
-             $importLogger->info('Import product job started', ['handle' => $product_data->title], $this->product_upload->id,$product_data->id);
+             $importLogger->info('Import product job started', ['handle' => $product_data->title], $this->product_upload->id,$product_data->id)
 
             try {
                 // Create product

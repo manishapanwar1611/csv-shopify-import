@@ -14,6 +14,7 @@ class DashboardController extends Controller
 {
    public function datatable()
     {
+        
         $query = Product_upload::selectRaw("
                                     id,
                                     filename,
