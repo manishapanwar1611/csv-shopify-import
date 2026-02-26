@@ -17,8 +17,19 @@ jobs:
         php-version: 8.2
         extensions: mbstring, bcmath, pdo, sqlite
 
-    - name: Install Dependencies
+    - name: Setup Node
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
+
+    - name: Install PHP Dependencies
       run: composer install --no-interaction --prefer-dist --optimize-autoloader
+
+    - name: Install Node Dependencies
+      run: npm install
+
+    - name: Build Assets
+      run: npm run build
 
     - name: Copy .env
       run: cp .env.example .env
@@ -33,7 +44,6 @@ jobs:
 
     - name: Run Migrations
       run: php artisan migrate --force
-
 
     - name: Run Tests
       run: php artisan test
