@@ -26,7 +26,7 @@ jobs:
       run: |
         echo "APP_ENV=production" > .env
         echo "APP_KEY=${{ secrets.APP_KEY }}" >> .env
-        echo "APP_URL=https://yourdomain.com" >> .env
+        echo "APP_URL=https://dev.cagapp.com.au/" >> .env
         echo "DB_CONNECTION=mysql" >> .env
         echo "DB_HOST=${{ secrets.DB_HOST }}" >> .env
         echo "DB_PORT=3306" >> .env
@@ -50,7 +50,7 @@ jobs:
         key: ${{ secrets.SERVER_SSH_KEY }}
         port: 22
         script: |
-          cd /var/www/vhosts/yourdomain.com/httpdocs
+          cd /var/www/vhosts/https://dev.cagapp.com.au/
           git pull origin main
           /opt/plesk/php/8.2/bin/php composer.phar install --no-dev --optimize-autoloader
           /opt/plesk/php/8.2/bin/php artisan migrate --force
