@@ -3,57 +3,32 @@ name: Laravel Deploy
 on:
   push:
     branches:
-      - main   # deploy on main branch
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-
-    - name: Set up PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: '8.2'
-        extensions: mbstring, bcmath, pdo_mysql, openssl
-
-    - name: Install Composer dependencies
-      run: composer install --no-dev --optimize-autoloader
-
-    - name: Copy environment variables
-      run: |
-        echo "APP_ENV=production" > .env
-        echo "APP_KEY=${{ secrets.APP_KEY }}" >> .env
-        echo "APP_URL=https://dev.cagapp.com.au/" >> .env
-        echo "DB_CONNECTION=mysql" >> .env
-        echo "DB_HOST=${{ secrets.DB_HOST }}" >> .env
-        echo "DB_PORT=3306" >> .env
-        echo "DB_DATABASE=${{ secrets.DB_NAME }}" >> .env
-        echo "DB_USERNAME=${{ secrets.DB_USER }}" >> .env
-        echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
-
-    - name: Run Laravel commands
-      run: |
-        php artisan migrate --force
-        php artisan config:cache
-        php artisan route:cache
-        php artisan view:cache
-        php artisan storage:link
-
-    - name: Deploy via SSH
-      uses: appleboy/ssh-action@master
+    - name: Deploy to Server via SSH
+      uses: appleboy/ssh-action@v1.0.3
       with:
         host: ${{ secrets.SERVER_IP }}
         username: ${{ secrets.SERVER_USER }}
-        key: ${{ secrets.SERVER_SSH_KEY  }}
+        key: ${{ secrets.SERVER_SSH_KEY }}
         port: 22
         script: |
-          cd /var/www/vhosts/https://dev.cagapp.com.au/
+          cd /var/www/vhosts/dev.cagapp.com.au/
+
           git pull origin main
-          /opt/plesk/php/8.2/bin/php composer.phar install --no-dev --optimize-autoloader
+
+          /opt/plesk/php/8.2/bin/php /usr/bin/composer install --no-dev --optimize-autoloader
+
           /opt/plesk/php/8.2/bin/php artisan migrate --force
+          /opt/plesk/php/8.2/bin/php artisan config:clear
           /opt/plesk/php/8.2/bin/php artisan config:cache
           /opt/plesk/php/8.2/bin/php artisan route:cache
+          /opt/plesk/php/8.2/bin/php artisan view:cache
+          /opt/plesk/php/8.2/bin/php artisan storage:link
+
           chmod -R 775 storage bootstrap/cache
