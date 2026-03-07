@@ -1,34 +1,9 @@
-name: Laravel Deploy
-
-on:
-  push:
-    branches:
-      - main
-
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Deploy to Server via SSH
-      uses: appleboy/ssh-action@v1.0.3
-      with:
-        host: ${{ secrets.SERVER_IP }}
-        username: ${{ secrets.SERVER_USER }}
-        key: ${{ secrets.SERVER_SSH_KEY }}
-        port: 22
-        script: |
-          cd /var/www/vhosts/dev.cagapp.com.au/
-
-          git pull origin main
-
-          /opt/plesk/php/8.2/bin/php /usr/bin/composer install --no-dev --optimize-autoloader
-
-          /opt/plesk/php/8.2/bin/php artisan migrate --force
-          /opt/plesk/php/8.2/bin/php artisan config:clear
-          /opt/plesk/php/8.2/bin/php artisan config:cache
-          /opt/plesk/php/8.2/bin/php artisan route:cache
-          /opt/plesk/php/8.2/bin/php artisan view:cache
-          /opt/plesk/php/8.2/bin/php artisan storage:link
-
-          chmod -R 775 storage bootstrap/cache
+- name: Test SSH
+  uses: appleboy/ssh-action@v1.0.3
+  with:
+    host: ${{ secrets.SERVER_IP }}
+    username: ${{ secrets.SERVER_USER }}
+    key: ${{ secrets.SERVER_SSH_KEY }}
+    script: |
+      echo "SSH Connected"
+      whoami
